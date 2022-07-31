@@ -1,1 +1,1 @@
-from lib import Vector, Line3D
+from lib import Vector3D, Line3D, Matrix3D
