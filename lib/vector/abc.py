@@ -2,9 +2,7 @@ from abc import ABC, abstractmethod
 from math import acos
 
 
-class VectorABC(ABC):
-    __slots__ = ()
-
+class VectorFactoryType(ABC):
     @abstractmethod
     def new(*args): raise NotImplementedError
     @classmethod
@@ -16,58 +14,96 @@ class VectorABC(ABC):
 
     @abstractmethod
     def zero_vector(): raise NotImplementedError
+    @classmethod
+    def origin(cls): return cls.zero_vector()
 
+    @staticmethod
+    def copy(vector): return vector.copy()
+
+
+class VectorAxisFactoryType(ABC):
     @abstractmethod
     def axis_vector(): raise NotImplementedError
 
-    def copy(vector): return vector.copy()
+class VectorAccessibleType(ABC):
+    @staticmethod
+    def get_component(vector, index): return vector[index]
+    @classmethod
+    def component(cls, *args, **kwargs): return cls.get_component(*args, **kwargs)
+    get = component
+
+    @staticmethod
+    def get_components(vector): return tuple(vector)
+    @classmethod
+    def components(cls, *args, **kwargs): return cls.get_components(*args, **kwargs)
+
+
+class VectorMutableType(ABC):
+    @abstractmethod
+    def clear(vector): raise NotImplementedError
+
+    @staticmethod
+    def set_component(vector, index, value):
+        vector[index] = float(value)
+        return vector
+    @classmethod
+    def set(cls, *args, **kwargs): return cls.set_component(*args, **kwargs)
+
     @abstractmethod
     def set_vector(vector, other): raise NotImplementedError
 
-    ###-------------
+    @abstractmethod
+    def set_components(*args, **kwargs): raise NotImplementedError
 
+
+class VectorPropertiesType(ABC):
     @abstractmethod
     def magnitude(vector): raise NotImplementedError
     @classmethod
     def length(cls, *args, **kwargs): return cls.magnitude(*args, **kwargs)
     len = length
 
-    @abstractmethod
-    def add_vector(vector, other): raise NotImplementedError
-    @abstractmethod
-    def iadd_vector(vector, other): raise NotImplementedError
+
+class VectorScalarArithmetic(ABC):
     @abstractmethod
     def add_scalar(vector, scalar): raise NotImplementedError
-    @abstractmethod
-    def iadd_scalar(vector, scalar): raise NotImplementedError
-    @classmethod
-    def sum_vectors(cls, vectors): return reduce(cls.add_vector, vectors)
-    @classmethod
-    def isum_vectors(cls, vector, others):
-        return reduce(cls.iadd_vector, [vector, *others])
 
     @abstractmethod
-    def subtract_vector(vector, other): raise NotImplementedError
-    @abstractmethod
-    def isubtract_vector(vector, other): raise NotImplementedError
-    @abstractmethod
     def subtract_scalar(vector, scalar): raise NotImplementedError
-    @abstractmethod
-    def isubtract_scalar(vector, scalar): raise NotImplementedError
 
     @abstractmethod
     def multiply_scalar(vector, scalar): raise NotImplementedError
     @classmethod
     def scale(cls, *args, **kwargs): return cls.multiply_scalar(*args, **kwargs)
+
+    @abstractmethod
+    def divide_scalar(vector, scalar): raise NotImplementedError
+
+
+class VectorMutableScalarArithmetic(ABC):
+    @abstractmethod
+    def iadd_scalar(vector, scalar): raise NotImplementedError
+
+    @abstractmethod
+    def isubtract_scalar(vector, scalar): raise NotImplementedError
+
     @abstractmethod
     def imultiply_scalar(vector, scalar): raise NotImplementedError
     @classmethod
     def iscale(cls, *args, **kwargs): return cls.imultiply_scalar(*args, **kwargs)
 
     @abstractmethod
-    def divide_scalar(vector, scalar): raise NotImplementedError
-    @abstractmethod
     def idivide_scalar(vector, scalar): raise NotImplementedError
+
+
+class VectorArithmetic(ABC):
+    @abstractmethod
+    def add_vector(vector, other): raise NotImplementedError
+    @classmethod
+    def sum_vectors(cls, vectors): return reduce(cls.add_vector, vectors)
+
+    @abstractmethod
+    def subtract_vector(vector, other): raise NotImplementedError
 
     @abstractmethod
     def dot_product(vector, other): raise NotImplementedError
@@ -79,20 +115,29 @@ class VectorABC(ABC):
     @classmethod
     def cross(cls, *args, **kwargs): return cls.cross_product(*args, **kwargs)
 
-    ###------------
-
     @classmethod
     def triple_scalar_product(cls, vector, other1, other2):
         return cls.dot_product(vector, cls.cross_product(other1, other2))
     @classmethod
-    def triple_scalar(cls, *args, **kwargs): return cls.triple_scalar_product(*args, **kwargs)
+    def triple_scalar(cls, *args, **kwargs):
+        return cls.triple_scalar_product(*args, **kwargs)
 
+
+class VectorMutableArithmetic(ABC):
+    @abstractmethod
+    def iadd_vector(vector, other): raise NotImplementedError
+    @classmethod
+    def isum_vectors(cls, vector, others):
+        return reduce(cls.iadd_vector, [vector, *others])
+
+    @abstractmethod
+    def isubtract_vector(vector, other): raise NotImplementedError
+
+
+class VectorOperationType(VectorPropertiesType, VectorScalarArithmetic, VectorArithmetic):
     @classmethod
     def unit_vector(cls, vector):
         return cls.divide_scalar(vector, cls.magnitude(vector))
-    @classmethod
-    def normalize_vector(cls, vector):
-        return cls.idivide_scalar(vector, cls.magnitude(vector))
 
     @classmethod
     def vector_projection(cls, vector, other):
@@ -141,6 +186,40 @@ class VectorABC(ABC):
         return parallel_vector_angles(*args, **kwargs)
 
     @classmethod
+    def acute_vector_angle(cls, *args, **kwargs):
+        return 0 < cls.vector_cosine(*args, **kwargs) < 1
+    @classmethod
+    def obtuse_vector_angle(cls, *args, **kwargs):
+        return -1 < cls.vector_cosine(*args, **kwargs) < 0
+
+    @classmethod
+    def perpendicular_vectors(cls, *args, **kwargs):
+        return cls.dot_product(*args, **kwargs) == 0
+    @classmethod
+    def parallel_vectors(cls, *args, **kwargs):
+        return abs(cls.vector_cosine(*args, **kwargs)) == 1
+    @classmethod
+    def scaled_vectors(cls, *args, **kwargs):
+        return cls.vector_cosine(*args, **kwargs) == 1
+    @classmethod
+    def inverted_vectors(cls, *args, **kwargs):
+        return cls.vector_cosine(*args, **kwargs) == -1
+    @classmethod
+    def equivalent_vectors(cls, vector, other):
+        vector_magnitude = cls.magnitude(vector)
+        other_magnitude = cls.magnitude(other)
+        cosine = cls.dot_product(vector, other) / (vector_magnitude * other_magnitude)
+        return cosine == 1 and vector_magnitude == other_magnitude
+
+
+class VectorMutableOperationType(VectorMutableScalarArithmetic, VectorOperationType):
+    @classmethod
+    def normalize_vector(cls, vector):
+        return cls.idivide_scalar(vector, cls.magnitude(vector))
+
+
+class VectorAxisOperationType(VectorAxisFactoryType, VectorOperationType):
+    @classmethod
     def axis_angle(cls, vector, axis):
         return cls.vector_angle(vector, cls.axis_vector(axis))
     @classmethod
@@ -175,35 +254,9 @@ class VectorABC(ABC):
     def axis_angles(cls, *args, **kwargs):
         return parallel_axis_angles(*args, **kwargs)
 
-    @classmethod
-    def acute_vector_angle(cls, *args, **kwargs):
-        return 0 < cls.vector_cosine(*args, **kwargs) < 1
-    @classmethod
-    def obtuse_vector_angle(cls, *args, **kwargs):
-        return -1 < cls.vector_cosine(*args, **kwargs) < 0
 
-    @classmethod
-    def perpendicular_vectors(cls, *args, **kwargs):
-        return cls.dot_product(*args, **kwargs) == 0
-    @classmethod
-    def parallel_vectors(cls, *args, **kwargs):
-        return abs(cls.vector_cosine(*args, **kwargs)) == 1
-    @classmethod
-    def scaled_vectors(cls, *args, **kwargs):
-        return cls.vector_cosine(*args, **kwargs) == 1
-    @classmethod
-    def inverted_vectors(cls, *args, **kwargs):
-        return cls.vector_cosine(*args, **kwargs) == -1
-    @classmethod
-    def equivalent_vectors(cls, vector, other):
-        vector_magnitude = cls.magnitude(vector)
-        other_magnitude = cls.magnitude(other)
-        cosine = cls.dot_product(vector, other) / (vector_magnitude * other_magnitude)
-        return cosine == 1 and vector_magnitude == other_magnitude
-
-
-class VectorTransformABC(ABC):
-    @abstractmethod
-    def truncate(): raise NotImplementedError
-    @abstractmethod
-    def expand(): raise NotImplementedError
+class VectorSingletonABC(VectorFactoryType, VectorAccessibleType,
+                            VectorMutableType, VectorMutableArithmetic,
+                            VectorMutableOperationType,
+                            VectorAxisOperationType):
+    __slots__ = ()
