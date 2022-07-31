@@ -2,9 +2,7 @@ from abc import ABC, abstractmethod
 from math import acos, pi
 
 
-class LineABC(ABC):
-    __slots__ = ()
-
+class LineFactoryType(ABC):
     @abstractmethod
     def new(*args): raise NotImplementedError
     @classmethod
@@ -17,34 +15,51 @@ class LineABC(ABC):
     @abstractmethod
     def axis(axis): raise NotImplementedError
 
-    @abstractmethod
-    def set_line(line, other): raise NotImplementedError
+    @staticmethod
     def copy(line): return line.copy()
 
-    @abstractmethod
-    def parametric_point(line, t): raise NotImplementedError
 
+class LineAccessibleType(ABC):
     @abstractmethod
     def direction(line): raise NotImplementedError
     @abstractmethod
     def through_point(line): raise NotImplementedError
 
+
+class LineMutableType(ABC):
     @abstractmethod
     def set_direction(line, vector): raise NotImplementedError
     @abstractmethod
     def set_through_point(line, point): raise NotImplementedError
 
     @abstractmethod
-    def point_distance(line, point): raise NotImplementedError
+    def set_line(line, other): raise NotImplementedError
     @abstractmethod
-    def line_distance(line,other): raise NotImplementedError
+    def set_components(*args, **kwargs): raise NotImplementedError
+
+
+class LinePropertiesType(ABC):
+    pass
+
+
+class LinePointOperationType(ABC):
+    @abstractmethod
+    def parametric_point(line, t): raise NotImplementedError
 
     @abstractmethod
-    def line_intersection(line, other): raise NotImplementedError
+    def point_distance(line, point): raise NotImplementedError
 
     @classmethod
     def intersects_point(cls, *args, **kwargs):
         return cls.point_distance(*args, **kwargs) == 0
+
+
+class LineOperationType(ABC):
+    @abstractmethod
+    def line_intersection(line, other): raise NotImplementedError
+
+    @abstractmethod
+    def line_distance(line,other): raise NotImplementedError
     @classmethod
     def intersects_line(cls, *args, **kwargs):
         return cls.line_distance(*args, **kwargs) == 0
@@ -75,3 +90,9 @@ class LineABC(ABC):
     @classmethod
     def parallel_lines(cls, *args, **kwargs):
         return abs(cls.line_cosine(*args, **kwargs)) == 1
+
+
+class LineSingletonABC(LineFactoryType, LineAccessibleType, LineMutableType,
+                        LinePropertiesType, LinePointOperationType,
+                        LineOperationType):
+    __slots__ = ()
