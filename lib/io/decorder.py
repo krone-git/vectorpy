@@ -1,0 +1,4 @@
+
+
+class ComponentDecoder:
+    pass

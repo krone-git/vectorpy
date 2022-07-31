@@ -1,0 +1,4 @@
+
+
+class ComponentEncoder:
+    pass
