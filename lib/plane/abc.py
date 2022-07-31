@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from math import acos, pi
 
 
-class PlaneABC(ABC):
+class PlaneSingletonABC(ABC):
     __slots__ = ()
 
     @abstractmethod
@@ -16,8 +16,7 @@ class PlaneABC(ABC):
     @abstractmethod
     def from_line(line, point): raise NotImplementedError
 
-    @abstractmethod
-    def set_plane(plane, other): raise NotImplementedError
+    @staticmethod
     def copy(plane): return plane.copy()
 
     @abstractmethod
@@ -31,11 +30,15 @@ class PlaneABC(ABC):
     def through_point(plane): raise NotImplementedError
 
     @abstractmethod
+    def set_plane(plane, other): raise NotImplementedError
+    @abstractmethod
     def set_direction(plane, normal): raise NotImplementedError
     @classmethod
     def set_normal(cls, *args, **kwargs): return cls.set_direction(*args, **kwargs)
     @abstractmethod
     def set_through_point(plane, point): raise NotImplementedError
+    @abstractmethod
+    def set_components(*args, **kwargs): raise NotImplementedError
 
     @abstractmethod
     def point_distance(plane, point): raise NotImplementedError
