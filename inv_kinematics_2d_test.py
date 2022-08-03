@@ -1,4 +1,4 @@
-from lib import vec2d, matrix2d
+from lib import vec2d, mat2d
 import tkinter as tk, abc
 
 
