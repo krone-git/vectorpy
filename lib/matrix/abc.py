@@ -11,7 +11,7 @@ class MatrixFactoryType(ABC):
     @abstractmethod
     def zero_matrix(): raise NotImplementedError
     @abstractmethod
-    def indentity_matrix(): raise NotImplementedError
+    def identity_matrix(): raise NotImplementedError
 
     @staticmethod
     def copy(matrix): return matrix.copy()

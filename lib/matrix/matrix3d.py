@@ -50,19 +50,19 @@ class Matrix3DSingleton(MatrixSingletonABC):
     def zero_matrix():
         return [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     @staticmethod
-    def indentity_matrix():
+    def identity_matrix():
         return [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
 
     @staticmethod
     def to_row_vectors(matrix):
         new_vector = Vector3D.new
         a, b, c, d, e, f, g, h, i = matrix
-        return (new_vector(a, b, c), new_vector(d, e, f), new_vector(g, h, i))
+        return new_vector(a, b, c), new_vector(d, e, f), new_vector(g, h, i)
     @staticmethod
     def to_column_vectors(matrix):
         new_vector = Vector3D.new
         a, b, c, d, e, f, g, h, i = matrix
-        return (new_vector(a, d, g), new_vector(b, e, h), new_vector(c, f, i))
+        return new_vector(a, d, g), new_vector(b, e, h), new_vector(c, f, i)
     @staticmethod
     def to_basis(matrix):
         new_vector = Vector3D.new
@@ -247,7 +247,6 @@ class Matrix3DSingleton(MatrixSingletonABC):
         matrix[7] *= scalar
         matrix[8] *= scalar
         return matrix
-
     @staticmethod
     def multiply_vector(matrix, vector):
         new_vector = Vector3D.new
@@ -269,7 +268,6 @@ class Matrix3DSingleton(MatrixSingletonABC):
             d * p + e * q + f * r,
             g * p + h * q + i * r
             )
-
     @staticmethod
     def multiply_line(matrix, line):
         line3 = Line3D
@@ -305,7 +303,6 @@ class Matrix3DSingleton(MatrixSingletonABC):
             d * x + e * y + f * z,
             g * x + h * y + i * z
             )
-
     @staticmethod
     def multiply_plane(matrix, plane):
         plane3 = Plane3D
@@ -341,7 +338,6 @@ class Matrix3DSingleton(MatrixSingletonABC):
             d * x + e * y + f * z,
             g * x + h * y + i * z
             )
-
     @staticmethod
     def multiply_matrix(matrix, other):
         a, b, c, d, e, f, g, h, i = matrix
@@ -407,7 +403,7 @@ class Matrix3DLinearTransformSingleton(MatrixLinearTransformSingletonABC):
             0.0, 0.0, 0.0, 0.0
             ]
     @staticmethod
-    def indentity_matrix():
+    def identity_matrix():
         return [
             1.0, 0.0, 0.0, 0.0,
             0.0, 1.0, 0.0, 0.0,
@@ -981,7 +977,7 @@ class Matrix3DLinearTransformSingleton(MatrixLinearTransformSingletonABC):
             e * C + f * G + g * K, e * D + f * H + g * L + h,
             i * A + j * E + k * I, i * B + j * F + k * J,
             i * C + j * G + k * K, i * D + j * H + k * L + l
-        ]
+            ]
     @staticmethod
     def icompile(matrix, other):
         a, b, c, d, e, f, g, h, i, j, k, l = matrix
@@ -1019,6 +1015,14 @@ class Matrix3DPerspectiveTransformSingleton(MatrixPerspectiveTransformSingletonA
             0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 1.0
+            ]
+    @staticmethod
+    def identity_matrix():
+        return [
+            1.0, 0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
             0.0, 0.0, 0.0, 1.0
             ]
     @staticmethod
