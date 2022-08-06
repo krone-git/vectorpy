@@ -1,4 +1,4 @@
-from lib import vec2d, mat2d
+from lib import vec2d, mat2d, mat2dt
 import tkinter as tk, abc
 
 
@@ -107,7 +107,7 @@ class TkinterCanvasLine(TkinterCanvasShape):
     @vector_x.setter
     def vector_x(self, value): self.point_x = self.origin_x + value
     @property
-    def vector_y(self): return self.point_y - self.origin_x
+    def vector_y(self): return self.point_y - self.origin_y
     @vector_y.setter
     def vector_y(self, value): self.point_y = self.origin_y + value
     @property
@@ -128,6 +128,8 @@ class TkinterCanvasLine(TkinterCanvasShape):
     def height(self, value): self.point_y = value
     @property
     def bbox(self): return (*self.origin, *self.point)
+    @property
+    def length(self): return (self.vector_x**2 + self.vector_y**2)**0.5
 
 
 class TkinterCanvasOval(TkinterCanvasShape):
@@ -176,12 +178,24 @@ if __name__ == "__main__":
     origin.draw()
 
     line = TkinterCanvasLine.from_vector(
-        canvas, origin.origin, [0, -150], fill="blue"
+        canvas, origin.origin, [0, -100], fill="blue"
         )
     line_end = TkinterCanvasCircle(
         canvas, line.point, 8, outline="blue", fill=""
         )
     line.draw()
     line_end.draw()
+    border = TkinterCanvasCircle(canvas, line.origin, 2 * line.length, fill="", outline="blue")
+    border.draw()
+
+    rotate = mat2dt.rotation(0.05)
+
+    def rotate_line():
+        line.vector = mat2dt.transform_vector(rotate, line.vector)
+        # line.update()
+        line_end.update()
+        window.after(2, rotate_line)
+
+    window.after(2, rotate_line)
 
     window.mainloop()
