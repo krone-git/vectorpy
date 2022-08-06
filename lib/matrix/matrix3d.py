@@ -249,20 +249,18 @@ class Matrix3DSingleton(MatrixSingletonABC):
         return matrix
     @staticmethod
     def multiply_vector(matrix, vector):
-        new_vector = Vector3D.new
         a, b, c, d, e, f, g, h, i = matrix
         p, q, r = vector
-        return new_vector(
+        return Vector3D.new(
             a * p + b * q + c * r,
             d * p + e * q + f * r,
             g * p + h * q + i * r
             )
     @staticmethod
     def imultiply_vector(matrix, vector):
-        set_components = Vector3D.set_components
         a, b, c, d, e, f, g, h, i = matrix
         p, q, r = vector
-        return set_components(
+        return Vector3D.set_components(
             vector,
             a * p + b * q + c * r,
             d * p + e * q + f * r,
@@ -874,25 +872,23 @@ class Matrix3DLinearTransformSingleton(MatrixLinearTransformSingletonABC):
 
     @staticmethod
     def transform_vector(matrix, vector):
-        new_vector = Vector3D.new
         a, b, c, d, e, f, g, h, i, j, k, l = matrix
         x, y, z = vector
-        return new_vector(
+        return Vector3D.new(
             a * x + b * y + c * z + d,
             e * x + f * y + g * z + h,
             i * x + j * y + k * z + l
             )
     @staticmethod
     def itransform_vector(matrix, vector):
-        new_vector = Vector3D.new
         a, b, c, d, e, f, g, h, i, j, k, l = matrix
         x, y, z = vector
-        other = new_vector(
+        return Vector3D.set_components(
+            vector,
             a * x + b * y + c * z + d,
             e * x + f * y + g * z + h,
             i * x + j * y + k * z + l
             )
-        return vec3.set_vector(vector, other)
 
     @staticmethod
     def transform_line(matrix, line):
@@ -1561,28 +1557,23 @@ class Matrix3DPerspectiveTransformSingleton(MatrixPerspectiveTransformSingletonA
 
     @staticmethod
     def transform_vector(matrix, vector):
-        vec3 = Vector3D.new
         a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p = matrix
         x, y, z = vector
-        return new_vector(
+        return Vector3D.new(
             a * x + b * y + c * z + d,
             e * x + f * y + g * z + h,
-            i * x + j * y + k * z + l,
-            m * x + n * y + o * z + p
+            i * x + j * y + k * z + l
             )
     @staticmethod
     def itransform_vector(matrix, vector):
-        set_components = Vector3D.set_components
         a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p = matrix
         x, y, z = vector
-        set_components(
+        return Vector3D.set_components(
             vector,
             a * x + b * y + c * z + d,
             e * x + f * y + g * z + h,
-            i * x + j * y + k * z + l,
-            m * x + n * y + o * z + p
+            i * x + j * y + k * z + l
             )
-        return vector
 
     @staticmethod
     def transform_line(matrix, line):

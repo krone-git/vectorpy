@@ -459,17 +459,16 @@ class Matrix2DTransformSingleton(MatrixLinearTransformSingletonABC):
 
     @staticmethod
     def transform_vector(matrix, vector):
-        new_vector = Vector3D.new
-        a, b, c, d, e, f, g = matrix
-        x, y = vector
-        return new_vector(a * x + b * y + c, d * x + e * y + f)
-    @staticmethod
-    def itransform_vector(matrix, vector):
-        new_vector = Vector3D.new
         a, b, c, d, e, f = matrix
         x, y = vector
-        other = new_vector(a * x + b * y + c, d * x + e * y + f)
-        return vec3.set_vector(vector, other)
+        return Vector2D.new(a * x + b * y + c, d * x + e * y + f)
+    @staticmethod
+    def itransform_vector(matrix, vector):
+        a, b, c, d, e, f = matrix
+        x, y = vector
+        return Vector2D.set_components(
+            vector, a * x + b * y + c, d * x + e * y + f
+            )
     @staticmethod
     def transform_line(matrix, line):
         line3 = Line2D
