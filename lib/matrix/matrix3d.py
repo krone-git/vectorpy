@@ -889,6 +889,16 @@ class Matrix3DLinearTransformSingleton(MatrixLinearTransformSingletonABC):
             e * x + f * y + g * z + h,
             i * x + j * y + k * z + l
             )
+    @staticmethod
+    def transform_into_vector(matrix, in_vector, out_vector):
+        a, b, c, d, e, f, g, h, i, j, k, l = matrix
+        x, y, z = in_vector
+        return Vector3D.set_components(
+            out_vector,
+            a * x + b * y + c * z + d,
+            e * x + f * y + g * z + h,
+            i * x + j * y + k * z + l
+            )
 
     @staticmethod
     def transform_line(matrix, line):
@@ -991,6 +1001,23 @@ class Matrix3DLinearTransformSingleton(MatrixLinearTransformSingletonABC):
         matrix[10] = i * C + j * G + k * K
         matrix[11] = i * D + j * H + k * L + l
         return matrix
+    @staticmethod
+    def compile_into_matrix(matrix, in_matrix, out_matrix):
+        a, b, c, d, e, f, g, h, i, j, k, l = matrix
+        A, B, C, D, E, F, G, H, I, J, K, L = in_matrix
+        out_matrix[0] = a * A + b * E + c * I
+        out_matrix[1] = a * B + b * F + c * J
+        out_matrix[2] = a * C + b * G + c * K
+        out_matrix[3] = a * D + b * H + c * L + d
+        out_matrix[4] = e * A + f * E + g * I
+        out_matrix[5] = e * B + f * F + g * J
+        out_matrix[6] = e * C + f * G + g * K
+        out_matrix[7] = e * D + f * H + g * L + h
+        out_matrix[8] = i * A + j * E + k * I
+        out_matrix[9] = i * B + j * F + k * J
+        out_matrix[10] = i * C + j * G + k * K
+        out_matrix[11] = i * D + j * H + k * L + l
+        return out_matrix
 
 mat3dlt = Matrix3DLinearTransform = Matrix3DLinearTransformSingleton()
 
@@ -1574,6 +1601,16 @@ class Matrix3DPerspectiveTransformSingleton(MatrixPerspectiveTransformSingletonA
             e * x + f * y + g * z + h,
             i * x + j * y + k * z + l
             )
+    @staticmethod
+    def transform_into_vector(matrix, vector):
+        a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p = matrix
+        x, y, z = in_vector
+        return Vector3D.set_components(
+            out_vector,
+            a * x + b * y + c * z + d,
+            e * x + f * y + g * z + h,
+            i * x + j * y + k * z + l
+            )
 
     @staticmethod
     def transform_line(matrix, line):
@@ -1682,6 +1719,27 @@ class Matrix3DPerspectiveTransformSingleton(MatrixPerspectiveTransformSingletonA
         matrix[14] = m * C + n * G + o * K
         matrix[15] = m * D + n * H + o * L + p
         return matrix
+    @staticmethod
+    def compile_linear_into_matrix(matrix, in_matrix, out_matrix):
+        a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p = matrix
+        A, B, C, D, E, F, G, H, I, J, K, L = in_matrix
+        out_matrix[0] = a * A + b * E + c * I
+        out_matrix[1] = a * B + b * F + c * J
+        out_matrix[2] = a * C + b * G + c * K
+        out_matrix[3] = a * D + b * H + c * L + d
+        out_matrix[4] = e * A + f * E + g * I
+        out_matrix[5] = e * B + f * F + g * J
+        out_matrix[6] = e * C + f * G + g * K
+        out_matrix[7] = e * D + f * H + g * L + h
+        out_matrix[8] = i * A + j * E + k * I
+        out_matrix[9] = i * B + j * F + k * J
+        out_matrix[10] = i * C + j * G + k * K
+        out_matrix[11] = i * D + j * H + k * L + l
+        out_matrix[12] = m * A + n * E + o * I
+        out_matrix[13] = m * B + n * F + o * J
+        out_matrix[14] = m * C + n * G + o * K
+        out_matrix[15] = m * D + n * H + o * L + p
+        return out_matrix
 
     @staticmethod
     def compile_perspective(matrix, other):
@@ -1718,5 +1776,26 @@ class Matrix3DPerspectiveTransformSingleton(MatrixPerspectiveTransformSingletonA
         matrix[14] = m * C + n * G + o * K + p * O
         matrix[15] = m * D + n * H + o * L + p * P
         return matrix
+    @staticmethod
+    def compile_perspective_into_matrix(matrix, in_matrix):
+        a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p = matrix
+        A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P = in_matrix
+        out_matrix[0] = a * A + b * E + c * I + d * M
+        out_matrix[1] = a * B + b * F + c * J + d * N
+        out_matrix[2] = a * C + b * G + c * K + d * O
+        out_matrix[3] = a * D + b * H + c * L + d * P
+        out_matrix[4] = e * A + f * E + g * I + h * M
+        out_matrix[5] = e * B + f * F + g * J + h * N
+        out_matrix[6] = e * C + f * G + g * K + h * O
+        out_matrix[7] = e * D + f * H + g * L + h * P
+        out_matrix[8] = i * A + j * E + k * I + l * M
+        out_matrix[9] = i * B + j * F + k * J + l * N
+        out_matrix[10] = i * C + j * G + k * K + l * O
+        out_matrix[11] = i * D + j * H + k * L + l * P
+        out_matrix[12] = m * A + n * E + o * I + p * M
+        out_matrix[13] = m * B + n * F + o * J + p * N
+        out_matrix[14] = m * C + n * G + o * K + p * O
+        out_matrix[15] = m * D + n * H + o * L + p * P
+        return out_matrix
 
 mat3dpt = Matrix3DPerspectiveTransform = Matrix3DPerspectiveTransformSingleton()

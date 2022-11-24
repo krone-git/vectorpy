@@ -253,14 +253,22 @@ class MatrixSingletonABC(MatrixFactoryType,
 class MatrixTransformArithmeticType(MatrixArithmeticType):
     @abstractmethod
     def compile(matrix, other): raise NotImplementedError
+    @abstractmethod
+    def compile_into_matrix(matrix, in_matrix, out_matrix): raise NotImplementedError
 
     @classmethod
     def multiply_matrix(cls, *args, **kwargs):
         return cls.compile(*args, **kwargs)
 
     @classmethod
-    def compile_matrices(cls, matrics):
+    def compile_matrices(cls, matrices):
         return reduce(cls.compile, matrices)
+    @classmethod
+    def compile_into_matrices(cls, matrix, in_matrices, out_matrices):
+        return map(
+            lambda pair: cls.compile_into_matrix(matrix, *pair),
+            zip(in_matrices, out_matrices)
+            )
 
     @classmethod
     def product_matrices(cls, matrics):
@@ -301,6 +309,9 @@ class MatrixTransformVectorType(MatrixVectorArithmeticType):
     def transform_vector(matrix, vector): raise NotImplementedError
     @abstractmethod
     def itransform_vector(matrix, vector): raise NotImplementedError
+    @abstractmethod
+    def transform_into_vector(matrix, in_vector, out_vector):
+        raise NotImplementedError
 
     @classmethod
     def multiply_vector(cls, *args, **kwargs):
@@ -315,6 +326,12 @@ class MatrixTransformVectorType(MatrixVectorArithmeticType):
     @classmethod
     def itransform_vectors(cls, matrix, vectors):
         return map(lambda vector: cls.itransform_vector(matrix, vector), vectors)
+    @classmethod
+    def transform_into_vectors(cls, matrix, in_vectors, out_vectors):
+        return map(
+            lambda pair: cls.transform_into_vector(matrix, *pair),
+            zip(in_vectors, out_vectors)
+            )
 
     @classmethod
     def product_vectors(cls, matrix, vectors):
@@ -487,6 +504,9 @@ class MatrixPerspectiveTransformSingletonABC(MatrixLinearTransformSingletonABC):
     @classmethod
     def iproduct_linear(cls, matrix, others):
         return reduce(cls.icompile_linear, [matrix, *others])
+    @abstractmethod
+    def compile_linear_into_matrix(matrix, in_matrix, out_matrix):
+        raise NotImplementedError
 
     @abstractmethod
     def compile_perspective(matrix, other): raise NotImplementedError
@@ -529,6 +549,13 @@ class MatrixPerspectiveTransformSingletonABC(MatrixLinearTransformSingletonABC):
     @classmethod
     def iproduct_matrices(cls, matrix, others):
         return reduce(cls.icompile_perspective, [matrix, *others])
+
+    @abstractmethod
+    def compile_perspective_into_matrix(matrix, in_matrix, out_matrix):
+        raise NotImplementedError
+    @classmethod
+    def compile_into_matrix(cls, *args):
+        return cls.compile_perspective_into_matrix(*args)
 
     @classmethod
     def power_matrix(cls, matrix, power):

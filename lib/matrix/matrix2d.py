@@ -394,7 +394,7 @@ class Matrix2DTransformSingleton(MatrixLinearTransformSingletonABC):
         return matrix
     @staticmethod
     def reflection(x, y):
-        return [-1.0 if x else 1.0, 0.0, 0.0, -1.0 if y else 1.0]
+        return [-1.0 if x else 1.0, 0.0, 0.0, 0.0, -1.0 if y else 1.0, 0.0]
     @staticmethod
     def set_reflection(matrix, x, y):
         matrix[0] = -1.0 if x else 1.0
@@ -470,6 +470,14 @@ class Matrix2DTransformSingleton(MatrixLinearTransformSingletonABC):
             vector, a * x + b * y + c, d * x + e * y + f
             )
     @staticmethod
+    def transform_into_vector(matrix, in_vector, out_vector):
+        a, b, c, d, e, f = matrix
+        x, y = in_vector
+        return Vector2D.set_components(
+            out_vector, a * x + b * y + c, d * x + e * y + f
+            )
+
+    @staticmethod
     def transform_line(matrix, line):
         line3 = Line2D
         get_direction = line2.direction
@@ -542,5 +550,16 @@ class Matrix2DTransformSingleton(MatrixLinearTransformSingletonABC):
         matrix[4] = d * B + e * E
         matrix[5] = d * C + e * F + f
         return matrix
+    @staticmethod
+    def compile_into_matrix(matrix, in_matrix, out_matrix):
+        a, b, c, d, e, f = matrix
+        A, B, C, D, E, F = in_matrix
+        out_matrix[0] = a * A + b * D
+        out_matrix[1] = a * B + b * E
+        out_matrix[2] = a * C + b * F + c
+        out_matrix[3] = d * A + e * D
+        out_matrix[4] = d * B + e * E
+        out_matrix[5] = d * C + e * F + f
+        return out_matrix
 
 mat2dt = Matrix2DTransform = Matrix2DTransformSingleton()
