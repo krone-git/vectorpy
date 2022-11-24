@@ -19,8 +19,17 @@ from .face import __all__ as __faceall__
 from .body import *
 from .body import __all__ as __bodyall__
 
+from .component import *
+from .component import __all__ as __componentall__
+
+from .scene import *
+from .scene import __all__ as __sceneall__
+
 from .interpolate import *
 from .interpolate import __all__ as __interpolateall__
+
+from .shape import *
+from .shape import __all__ as __shapeall__
 
 
 __all__  = (
@@ -31,5 +40,8 @@ __all__  = (
     *__kinematicsall__,
     *__faceall__,
     *__bodyall__,
-    *__interpolateall__
+    *__componentall__,
+    *__sceneall__,
+    *__interpolateall__,
+    *__shapeall__
     )
