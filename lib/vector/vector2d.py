@@ -21,6 +21,10 @@ class Vector2DSingleton(VectorSingletonABC):
         vector = [0.0, 0.0]
         vector[axis] = 1.0
         return vector
+    @staticmethod
+    def x_axis(): return [1.0, 0.0]
+    @staticmethod
+    def y_axis(): return [0.0, 1.0]
 
     @staticmethod
     def set_vector(vector, other):
