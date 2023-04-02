@@ -4,6 +4,9 @@ from .vector import __all__ as __vectorall__
 from .matrix import *
 from .matrix import __all__ as __matrixall__
 
+from .graph import *
+from .graph import __all__ as __graphall__
+
 from .line import *
 from .line import __all__ as __lineall__
 
@@ -35,6 +38,7 @@ from .shape import __all__ as __shapeall__
 __all__  = (
     *__vectorall__,
     *__matrixall__,
+    *__graphall__,
     *__lineall__,
     *__planeall__,
     *__kinematicsall__,
