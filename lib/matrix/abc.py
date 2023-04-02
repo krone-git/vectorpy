@@ -42,6 +42,9 @@ class MatrixFactoryBasisType(ABC):
     def to_basis_vectors(cls, *args, **kwargs):
         return cls.to_column_vectors(*args, **kwargs)
 
+    @abstractmethod
+    def sub_matrix(*args, **kwargs): raise NotImplementedError
+
 
 class MatrixAccessibleType(ABC):
     @abstractmethod
@@ -58,11 +61,15 @@ class MatrixAccessibleType(ABC):
     def column(matrix, column): raise NotImplementedError
     @abstractmethod
     def columns(matrix): raise NotImplementedError
+    @abstractmethod
+    def column_vector(matrix, column): raise NotImplementedError
 
     @abstractmethod
     def row(matrix, row): raise NotImplementedError
     @abstractmethod
     def rows(matrix): raise NotImplementedError
+    @abstractmethod
+    def row_vector(matrix, row): raise NotImplementedError
 
 
 class MatrixMutableType(ABC):
@@ -74,6 +81,9 @@ class MatrixMutableType(ABC):
 
     @abstractmethod
     def set_matrix(matrix, other): raise NotImplementedError
+    @abstractmethod
+    def set_sub_matrix(matrix, other, row, column, m, n):
+        raise NotImplementedError
 
     @abstractmethod
     def set_component(matrix, row, column, value): raise NotImplementedError
@@ -100,8 +110,33 @@ class MatrixMutableType(ABC):
 
 
 class MatrixPropertiesType(ABC):
+    @staticmethod
+    def width(matrix): return int(len(matrix)**0.5)
+    @staticmethod
+    def height(matrix): return int(len(matrix)**0.5)
+    @classmethod
+    def shape(cls, matrix): return cls.width(matrix), cls.height(matrix)
+
+    @classmethod
+    def has_additive_dimensions(cls, matrix, other):
+        m, n = cls.shape(matrix)
+        w, h = cls.shape(other)
+        return m == w and n == h
+    @classmethod
+    def has_multiplicative_dimensions(cls, matrix, other):
+        m, n = cls.shape(matrix)
+        w, h = cls.shape(other)
+        return m == h and n == w
+    @classmethod
+    def is_square(cls, matrix):
+        return cls.width(matrix) == cls.height(matrix)
+
+
+class SquareMatrixPropertiesType(ABC):
     @abstractmethod
     def determinant(matrix): raise NotImplementedError
+    @classmethod
+    def is_singular(cls, matrix): return cls.determinant(matrix) == 0
 
 
 class MatrixScalarArithmeticType(ABC):
@@ -225,6 +260,20 @@ class MatrixMutableArithmeticType(ABC):
             )
 
 
+class MatrixStringOperationsType(ABC):
+    @classmethod
+    def to_string(cls, matrix, precision):
+        m = cls.width(matrix)
+        values = [str(round(i, precisio)) for i in matrix]
+        length = max(len(v) for v in values)
+        lines = [
+            " ".join([s.rjust(length + 1) for s in values[i * m: (i + 1) * m]])
+            for i in range(m)
+            ]
+        string = "\n".join(["[", *lines, "]"])
+        return string
+
+
 class MatrixSingletonABC(MatrixFactoryType,
                             MatrixFactoryVectorType,
                             MatrixFactoryBasisType,
@@ -237,7 +286,8 @@ class MatrixSingletonABC(MatrixFactoryType,
                             MatrixLineArithmeticType,
                             MatrixPlaneArithmeticType,
                             MatrixArithmeticType,
-                            MatrixMutableArithmeticType):
+                            MatrixMutableArithmeticType,
+                            MatrixStringOperationsType):
     __slots__=()
 
     @classmethod
@@ -248,6 +298,9 @@ class MatrixSingletonABC(MatrixFactoryType,
     def iapply_matrices_to_vectors(cls, matrices, vector):
         matrix = cls.multiply_matrices(matrices)
         return map(lambda vector: cls.imultiply_vector(matrix, vector), vectors)
+
+class SquareMatrixSingletonABC(SquareMatrixPropertiesType, MatrixSingletonABC):
+    pass
 
 
 class MatrixTransformArithmeticType(MatrixArithmeticType):
@@ -401,11 +454,13 @@ class MatrixTransformType(MatrixFactoryType,
                             MatrixAccessibleType,
                             MatrixMutableType,
                             MatrixPropertiesType,
+                            SquareMatrixPropertiesType,
                             MatrixTransformVectorType,
                             MatrixTransformArithmeticType,
                             MatrixTransformMutableArithmeticType,
                             MatrixTransformLineType,
-                            MatrixTransformPlaneType):
+                            MatrixTransformPlaneType,
+                            MatrixStringOperationsType):
     @abstractmethod
     def from_base_matrix(*args, **kwargs): raise NotImplementedError
     @abstractmethod
