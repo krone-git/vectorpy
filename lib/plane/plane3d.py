@@ -95,8 +95,19 @@ class Plane3DSingleton(PlaneSingletonABC):
 
     @staticmethod
     def line_intersection(plane, line):
+        vec3 = Vector3D
+        line3 = Line3D
+        new_vector = vec3.new
+        from_points = vec3.from_points
+        dot = vec3.dot_product
+        parametric_point = line3.parametric_point
         x, a, y, b, z, c = plane
         q, i, r, j, s, k = line
+        normal = new_vector(a, b, c)
+        direction = new_vector(i, j, k)
+        vector = from_points([x, y, z], [q, r, s])
+        t = -dot(normal, vector) / dot(normal, direction)
+        return parametric_point(line, t)
 
 
 plane3d = Plane3D = Plane3DSingleton()
