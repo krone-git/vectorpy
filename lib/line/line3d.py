@@ -33,12 +33,12 @@ class Line3DSingleton(LineSingletonABC):
         return line
     @staticmethod
     def set_components(line, a, b, c, x, y, z):
-        line[0] = a / 1.0
-        line[1] = b / 1.0
-        line[2] = c / 1.0
-        line[3] = x / 1.0
-        line[4] = y / 1.0
-        line[5] = z / 1.0
+        line[0] = x / 1.0
+        line[1] = a / 1.0
+        line[2] = y / 1.0
+        line[3] = b / 1.0
+        line[4] = z / 1.0
+        line[5] = c / 1.0
         return line
 
     @staticmethod
