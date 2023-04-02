@@ -1,5 +1,6 @@
-from .abc import MatrixSingletonABC, MatrixLinearTransformSingletonABC, \
+from .abc import SquareMatrixSingletonABC, MatrixLinearTransformSingletonABC, \
                     MatrixPerspectiveTransformSingletonABC
+from .matrix2d import Matrix2D
 from ..vector.vector3d import Vector3D
 from ..line.line3d import Line3D
 from ..plane.plane3d import Plane3D
@@ -11,7 +12,7 @@ __all__ = (
     "mat3dpt", "Matrix3DPerspectiveTransform"
     )
 
-class Matrix3DSingleton(MatrixSingletonABC):
+class Matrix3DSingleton(SquareMatrixSingletonABC):
     @staticmethod
     def new(a, b, c, d, e, f, g, h, i):
         return [
@@ -65,9 +66,8 @@ class Matrix3DSingleton(MatrixSingletonABC):
         return new_vector(a, d, g), new_vector(b, e, h), new_vector(c, f, i)
     @staticmethod
     def to_basis(matrix):
-        new_vector = Vector3D.new
         a, _, _, _, e, _, _, _, i = matrix
-        return new_vector(a, e, i)
+        return Vector3D.new(a, e, i)
 
     @staticmethod
     def get_component(matrix, column, row):
@@ -80,11 +80,25 @@ class Matrix3DSingleton(MatrixSingletonABC):
     @staticmethod
     def column(matrix, column): return matrix[column::3]
     @staticmethod
+    def column_vector(matrix, column):
+        return Vector3D.from_iterable(matrix[column::3])
+    @staticmethod
     def rows(matrix):
         a, b, c, d, e, f, g, h, i = matrix
         return (a, b, c), (c, d, e), (g, h, i)
     @staticmethod
     def row(matrix, row): return matrix[row * 3: (row + 1) * 3]
+    @staticmethod
+    def row_vector(matrix, row):
+        return Vector3D.from_iterable(matrix[row * 3: (row + 1) * 3])
+    @staticmethod
+    def sub_matrix2d(matrix, row, column):
+        return Matrix2D.new(
+            matrix[row * 3 + column], matrix[row * 3 + column + 1],
+            matrix[(row + 1) * 3 + column], matrix[(row + 1) * 3 + column + 1]
+            )
+    @classmethod
+    def sub_matrix(*args): return cls.sub_matrix2d(*args)
 
     @staticmethod
     def clear(matrix):
@@ -143,6 +157,13 @@ class Matrix3DSingleton(MatrixSingletonABC):
         matrix[3], matrix[4], matrix[5], \
         matrix[6], matrix[7], matrix[8] = other
         return matrix
+    @classmethod
+    def set_sub_matrix(cls, matrix, other, row, column, m, n):
+        for i in range(m):
+            for j in range(n):
+                matrix[3 * (row + i) + (column + j)] = other[i * m + j]
+        return matrix
+
 
     @staticmethod
     def determinant(matrix):
@@ -430,18 +451,23 @@ class Matrix3DLinearTransformSingleton(MatrixLinearTransformSingletonABC):
         return matrix[row * 4 + column]
 
     @staticmethod
-    def column(matrix, column): return matrix[column::4]
-    @staticmethod
     def columns(matrix):
         a, b, c, d, e, f, g, h, i, j, k, l = matrix
         return (a, e, i), (b, f, j), (c, g, k), (d, h, l)
-
+    @staticmethod
+    def column(matrix, column): return matrix[column::4]
+    @staticmethod
+    def column_vector(matrix, column):
+        return Vector4D.from_iterable(matrix[column::4])
     @staticmethod
     def rows(matrix):
         a, b, c, d, e, f, g, h, i, j, k, l = matrix
         return (a, b, c, d), (e, f, g, h), (i, j, k, l)
     @staticmethod
     def row(matrix, row): return matrix[row * 4: (row + 1) * 4]
+    @staticmethod
+    def row_vector(matrix, row):
+        return Vector4D.from_iterable(matrix[row * 4: (row + 1) * 4])
 
     @staticmethod
     def clear(matrix):
@@ -449,7 +475,6 @@ class Matrix3DLinearTransformSingleton(MatrixLinearTransformSingletonABC):
         matrix[4] = matrix[5] = matrix[6] = matrix[7] = \
         matrix[8] = matrix[9] = matrix[10] = matrix[11] = 0.0
         return matrix
-
     @staticmethod
     def reset(matrix):
         matrix[1] = matrix[2] = matrix[3] = \
@@ -505,6 +530,12 @@ class Matrix3DLinearTransformSingleton(MatrixLinearTransformSingletonABC):
         matrix[0], matrix[1], matrix[2], matrix[3], \
         matrix[4], matrix[5], matrix[6], matrix[7], \
         matrix[8], matrix[9], matrix[10], matrix[11] = other
+        return matrix
+    @classmethod
+    def set_sub_matrix(cls, matrix, other, row, column, m, n):
+        for i in range(m):
+            for j in range(n):
+                matrix[4 * (row + i) + (column + j)] = other[i * m + j]
         return matrix
 
     @staticmethod
@@ -1098,6 +1129,9 @@ class Matrix3DPerspectiveTransformSingleton(MatrixPerspectiveTransformSingletonA
     @staticmethod
     def column(matrix, column): return matrix[column::4]
     @staticmethod
+    def column_vector(matrix, column):
+        return Vector4D.from_iterable(matrix[column::4])
+    @staticmethod
     def columns(matrix):
         a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p = matrix
         return (a, e, i, m), (b, f, j, n), (c, g, k, o), (d, h, l, p)
@@ -1108,6 +1142,9 @@ class Matrix3DPerspectiveTransformSingleton(MatrixPerspectiveTransformSingletonA
         return (a, b, c, d), (e, f, g, h), (i, j, k, l), (m, n, o, p)
     @staticmethod
     def row(matrix, row): return matrix[row * 4: (row + 1) * 4]
+    @staticmethod
+    def row_vector(matrix, row):
+        return Vector4D.from_iterable(matrix[row * 4: (row + 1) * 4])
 
     @staticmethod
     def set_component(matrix, column, row, value):
@@ -1165,6 +1202,13 @@ class Matrix3DPerspectiveTransformSingleton(MatrixPerspectiveTransformSingletonA
         matrix[8], matrix[9], matrix[10], matrix[11], \
         matrix[12], matrix[13], matrix[14], matrix[15] = other
         return matrix
+    @classmethod
+    def set_sub_matrix(cls, matrix, other, row, column, m, n):
+        for i in range(m):
+            for j in range(n):
+                matrix[4 * (row + i) + (column + j)] = other[i * m + j]
+        return matrix
+
 
     @staticmethod
     def clear(matrix):

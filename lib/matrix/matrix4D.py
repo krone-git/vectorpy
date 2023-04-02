@@ -1,4 +1,4 @@
-from .abc import MatrixSingletonABC
+from .abc import SquareMatrixSingletonABC
 from math import cos, sin
 
 

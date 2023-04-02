@@ -1,4 +1,4 @@
-from .abc import MatrixSingletonABC, MatrixLinearTransformSingletonABC
+from .abc import SquareMatrixSingletonABC, MatrixLinearTransformSingletonABC
 from ..vector.vector2d import Vector2D
 # from ..line.line2d import Line2D
 # from ..line.plane2d import Plane2D
@@ -6,11 +6,11 @@ from math import cos, sin
 
 
 __all__ = (
-    "mat2d", "Matrix2D", "mat2dt", "Matrix2DTransform"
+    "mat2d", "matrix2d", "Matrix2D", "mat2dt", "matrix2dtransform", "Matrix2DTransform"
     )
 
 
-class Matrix2DSingleton(MatrixSingletonABC):
+class Matrix2DSingleton(SquareMatrixSingletonABC):
     @staticmethod
     def new(a, b, c, d): return [a / 1.0, b / 1.0, c / 1.0, d / 1.0]
     @staticmethod
@@ -64,11 +64,19 @@ class Matrix2DSingleton(MatrixSingletonABC):
     @staticmethod
     def column(matrix, column): return matrix[column::2]
     @staticmethod
+    def column_vector(matrix, column):
+        return Vector2D.from_iterable(matrix[column::2])
+    @staticmethod
     def rows(matrix):
         a, b, c, d = matrix
         return (a, b), (c, d)
     @staticmethod
     def row(matrix, row): return matrix[row * 2: (row + 1) * 2]
+    @staticmethod
+    def row_vector(matrix, row):
+        return Vector2D.from_iterable(matrix[row * 2: (row + 1) * 2])
+    @staticmethod
+    def sub_matrix(matrix, row, column): return [matrix[row * 2 + column]]
 
     @staticmethod
     def clear(matrix):
@@ -114,6 +122,12 @@ class Matrix2DSingleton(MatrixSingletonABC):
     @staticmethod
     def set_matrix(matrix, other):
         matrix[0], matrix[1], matrix[2], matrix[3] = other
+        return matrix
+    @staticmethod
+    def set_sub_matrix(matrix, other, row, column, m, n):
+        for i in range(m):
+            for j in range(n):
+                matrix[2 * (row + i) + (column + j)] = other[i * m + j]
         return matrix
 
     @staticmethod
@@ -273,7 +287,7 @@ class Matrix2DSingleton(MatrixSingletonABC):
         return [a / scalar, b / scalar, c / scalar, d / scalar]
 
 
-mat2d = Matrix2D = Matrix2DSingleton()
+mat2d = matrix2d = Matrix2D = Matrix2DSingleton()
 
 
 class Matrix2DTransformSingleton(MatrixLinearTransformSingletonABC):
@@ -319,11 +333,17 @@ class Matrix2DTransformSingleton(MatrixLinearTransformSingletonABC):
     @staticmethod
     def column(matrix, column): return matrix[column::3]
     @staticmethod
+    def column_vector(matrix, column):
+        return Vector2D.from_iterable(matrix[column::3])
+    @staticmethod
     def rows(matrix):
         a, b, c, d, e, f = matrix
         return (a, b, c), (d, e, f)
     @staticmethod
     def row(matrix, row): return matrix[row * 3: (row + 1) * 3]
+    @staticmethod
+    def row_vector(matrix, row):
+        return Vector2D.from_iterable(matrix[row * 3: (row + 1) * 3])
 
     @staticmethod
     def clear(matrix):
@@ -373,6 +393,12 @@ class Matrix2DTransformSingleton(MatrixLinearTransformSingletonABC):
     def set_matrix(matrix, other):
         matrix[0], matrix[1], matrix[2], \
         matrix[3], matrix[4], matrix[5] = other
+        return matrix
+    @staticmethod
+    def set_sub_matrix(matrix, other, row, column, m, n):
+        for i in range(m):
+            for j in range(n):
+                matrix[3 * (row + i) + (column + j)] = other[i * m + j]
         return matrix
 
     @staticmethod
@@ -562,4 +588,4 @@ class Matrix2DTransformSingleton(MatrixLinearTransformSingletonABC):
         out_matrix[5] = d * C + e * F + f
         return out_matrix
 
-mat2dt = Matrix2DTransform = Matrix2DTransformSingleton()
+mat2dt = matrix2dtransform = Matrix2DTransform = Matrix2DTransformSingleton()
