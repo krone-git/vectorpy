@@ -8,7 +8,8 @@ __all__ = (
 class Vector4DSingleton(VectorSingletonABC):
     @staticmethod
     def new(x, y, z, w): return [x / 1.0, y / 1.0, z / 1.0, w / 1.0]
-
+    @staticmethod
+    def from_iterable(values): return [v / 1.0 for v in values][:4]
     @staticmethod
     def zero_vector(): return [0.0, 0.0, 0.0, 0.0]
 

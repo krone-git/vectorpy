@@ -9,6 +9,8 @@ __all__ = (
 class VectorNDSingleton(VectorSingletonABC):
     @staticmethod
     def new(*args): return [i / 1.0 for i in args]
+    @staticmethod
+    def from_iterable(values): return [v / 1.0 for v in values]
 
     @staticmethod
     def zero_vector(size): return [0.0] * size

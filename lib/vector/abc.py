@@ -7,10 +7,12 @@ class VectorFactoryType(ABC):
     def new(*args): raise NotImplementedError
     @classmethod
     def __call__(cls, *args, **kwargs): return cls.new(*args, **kwargs)
+    @abstractmethod
+    def from_iterable(values): raise NotImplementedError
     @classmethod
     def from_points(point, other): return cls.subtract_vector(other, point)
     # @abstractmethod
-    # def from_direction(*args, **kwargs): raise NotImplementedError
+    # def from_direction(theta, magnitude): raise NotImplementedError
 
     @abstractmethod
     def zero_vector(): raise NotImplementedError

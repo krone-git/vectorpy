@@ -10,6 +10,8 @@ class Vector2DSingleton(VectorSingletonABC):
     @staticmethod
     def new(x, y): return [x / 1.0, y / 1.0]
     @staticmethod
+    def from_iterable(values): return [v / 1.0 for v in values][:2]
+    @staticmethod
     def from_direction(theta_x, magnitude):
         return [magnitude * cos(theta_x), magnitude * sin(theta_x)]
 
