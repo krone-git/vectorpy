@@ -11,8 +11,6 @@ class VectorFactoryType(ABC):
     def from_iterable(values): raise NotImplementedError
     @classmethod
     def from_points(point, other): return cls.subtract_vector(other, point)
-    # @abstractmethod
-    # def from_direction(theta, magnitude): raise NotImplementedError
 
     @abstractmethod
     def zero_vector(): raise NotImplementedError
@@ -212,6 +210,13 @@ class VectorOperationType(VectorPropertiesType, VectorScalarArithmetic, VectorAr
         other_magnitude = cls.magnitude(other)
         cosine = cls.dot_product(vector, other) / (vector_magnitude * other_magnitude)
         return cosine == 1 and vector_magnitude == other_magnitude
+
+    @classmethod
+    def center_vector(cls, vectors):
+        size = len(vectors)
+        return cls.divide_scalar(
+            cls.sum_vectors(vectors), size
+            )
 
 
 class VectorMutableOperationType(VectorMutableScalarArithmetic, VectorOperationType):
