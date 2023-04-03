@@ -1,9 +1,10 @@
-from .abc import ElementTypeABC, MutableFaceBodyType
+from .abc import MutableFaceBodyType
+from ..element.abc import BaseElementABC
 
 
 __all__ = ("FaceBody",)
 
-class FaceBody(ElementTypeABC, MutableFaceBodyType):
+class FaceBody(BaseElementABC, MutableFaceBodyType):
     __slots__ = ()
 
     def __init__(self, origin, basis, faces):

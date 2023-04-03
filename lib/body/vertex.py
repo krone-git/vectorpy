@@ -1,9 +1,10 @@
-from .abc import VertexBodySingletonABC
+from .abc import MutableVertexBodyType
+from ..element.abc import BaseElementABC
 
 
 __all__ = ("VertexBody",)
 
-class VertexBody(ElementTypeABC, MutableVertexBodyType):
+class VertexBody(BaseElementABC, MutableVertexBodyType):
     __slots__ = ()
 
     def __init__(self, origin, basis, vertices):

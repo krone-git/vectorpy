@@ -1,7 +1,9 @@
-from ..element.abc import ElementTypeABC, MutableMasterElementType
+from ..element.abc import BaseElementABC, MutableMasterElementType
 
 
-class SceneABC(ElementTypeABC, MutableMasterElementType):
+__all__ = ()
+
+class SceneABC(BaseElementABC, MutableMasterElementType):
     def __init__(self, origin, basis, components):
         ElementTypeABC.__init__(self, origin, basis)
         MutableMasterElementType.__init__(self, components)

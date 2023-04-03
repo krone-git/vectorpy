@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from ..element.abc import ElementTypeABC
+# from ..element.abc import ElementTypeABC
 
 
 class VertexBodyType(ABC):
