@@ -116,7 +116,10 @@ class Vector2DSingleton(VectorSingletonABC):
         return x * a + y * b
 
     @staticmethod
-    def cross_product(vector, other): return [0.0, 0.0]
+    def cross_product(vector, other):
+        x, y = vector
+        a, b = other
+        return x * b - y * a
 
     @staticmethod
     def axis_angle(vector, axis):
