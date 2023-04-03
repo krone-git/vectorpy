@@ -77,6 +77,6 @@ class PlaneSingletonABC(ABC):
     #
     # @abstractmethod
     # def perpendicular_planes(plane, other): raise NotImplementedError
-    @classmethod
-    def parallel_planes(cls, plane, other):
-        return
+    # @abstractmethod
+    # def parallel_planes(cls, plane, other):
+    #     raise NotImplementedError

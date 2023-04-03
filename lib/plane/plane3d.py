@@ -30,7 +30,7 @@ class Plane3DSingleton(PlaneSingletonABC):
     @staticmethod
     def from_line(line):
         x, a, y, b, z, c = line
-        return [x, a, y, v, z, c]
+        return [x, a, y, b, z, c]
 
     @staticmethod
     def set_direction(plane, normal):
@@ -38,7 +38,7 @@ class Plane3DSingleton(PlaneSingletonABC):
         return plane
     @staticmethod
     def set_through_point(plane, point):
-        plane[0], plane[2], plane[4] = normal
+        plane[0], plane[2], plane[4] = point
         return plane
     @staticmethod
     def set_plane(plane, other):
@@ -46,12 +46,12 @@ class Plane3DSingleton(PlaneSingletonABC):
         return plane
     @staticmethod
     def set_components(plane, a, b, c, x, y, z):
-        plane[0] = a / 1.0
-        plane[1] = b / 1.0
-        plane[2] = c / 1.0
-        plane[3] = x / 1.0
-        plane[4] = y / 1.0
-        plane[5] = z / 1.0
+        plane[0] = x / 1.0
+        plane[1] = a / 1.0
+        plane[2] = y / 1.0
+        plane[3] = b / 1.0
+        plane[4] = z / 1.0
+        plane[5] = c / 1.0
         return plane
 
     @staticmethod
