@@ -24,11 +24,11 @@ class VectorNDSingleton(VectorSingletonABC):
     @staticmethod
     def set_vector(vector, other):
         for i, v in enumerate(other): vector[i] = v / 1.0
-        return vectors
+        return vector
     @staticmethod
     def set_components(vector, *components):
         for i, v in enumerate(components): vector[i] = v / 1.0
-        return vectors
+        return vector
 
     @staticmethod
     def clear(vector):

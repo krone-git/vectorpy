@@ -1,4 +1,4 @@
-from ..element.abc import BaseElementABC, NodeElementType, LeafeElementType
+from ..element.abc import BaseElementABC, NodeElementType, LeafElementType
 
 
 __all__ = ("Component",)

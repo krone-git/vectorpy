@@ -51,6 +51,9 @@ class MutableComponentElementType(ComponentElementType):
         self._master = None
         return self
 
+class ContentsElementType(ABC):
+    "???"
+    pass
 
 class BasisElementType(ContentsElementType):
     def __init__(self, matrix):
@@ -65,7 +68,7 @@ class BasisElementType(ContentsElementType):
 
 class OriginElementType(ContentsElementType):
     def __init__(self, origin):
-        return self._origin = origin
+        self._origin = origin
 
     def origin(self): return self._origin
 

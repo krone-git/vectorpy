@@ -7,5 +7,5 @@ from .component import __all__ as __componentall__
 
 
 __all__ = (
-    *__componentall__
+    *__componentall__,
     )
